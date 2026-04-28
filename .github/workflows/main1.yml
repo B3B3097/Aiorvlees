@@ -1,0 +1,37 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip python3-setuptools python3-wheel python3-dev build-essential git autoconf automake build-tools zip libltdl-dev libssl-dev libffi-dev cmake ninja-build openjdk-17-jdk
+          pip3 install buildozer cython
+
+      - name: Build APK with Buildozer
+        run: |
+          chmod +x ./main.py
+          buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: vless-hunter-apk
+          path: bin/*.apk
