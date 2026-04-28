@@ -2,8 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -19,19 +18,40 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install Dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip python3-setuptools python3-wheel python3-dev build-essential git autoconf automake build-tools zip libltdl-dev libssl-dev libffi-dev cmake ninja-build openjdk-17-jdk
+          sudo apt-get install -y \
+            python3-pip \
+            python3-setuptools \
+            python3-wheel \
+            python3-dev \
+            build-essential \
+            git \
+            autoconf \
+            automake \
+            zip \
+            unzip \
+            libltdl-dev \
+            libssl-dev \
+            libffi-dev \
+            cmake \
+            ninja-build \
+            openjdk-17-jdk \
+            libncurses5
+
+      - name: Install Python Dependencies
+        run: |
+          pip3 install --upgrade pip
           pip3 install buildozer cython
 
       - name: Build APK with Buildozer
         run: |
-          chmod +x ./main.py
+          # Buildozer сам скачает Android SDK/NDK и build-tools
           buildozer android debug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4  # ← Исправлено: v3 → v4
+        uses: actions/upload-artifact@v4
         with:
           name: vless-hunter-apk
           path: bin/*.apk
