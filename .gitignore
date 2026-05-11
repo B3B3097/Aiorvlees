@@ -2,42 +2,39 @@
 # Dependencies
 node_modules/
 
-# Build outputs
+# Environment variables
+.env.local
+
+# Build artifacts
 dist/
 build/
-*.js
-*.ts
-*.tsx
+*.js.map
 
-# Environment variables
-.env
-.env.local
-*.env.*
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
+# Cache directories
+.npm/
+.yarn/
 
 # Logs
 *.log
+
+# Temporary files
+*.tmp
+*.temp
 
 # OS generated files
 .DS_Store
 Thumbs.db
 
-# Expo specific
-.expo/
-node_modules/.bin/expo*
-*.expo*
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# TypeScript
-*.js.map
-*.tsbuildinfo
-
-# Coverage
-coverage/
-.nyc_output/
+# Python specific (if applicable)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
 ```
