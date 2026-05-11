@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, ScrollView, Alert, ActivityIndicator, Modal, TouchableOpacity, Linking } from 'react-native';
 import { Wireguard } from 'react-native-wireguard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// Flag to determine if this is GitHub Edition (set via environment variable or build config)
+const IS_GITHUB_EDITION = true; // Set to true for GitHub Edition build
+const TELEGRAM_CHANNEL = 'https://t.me/YOUR_CHANNEL_HERE'; // Replace with your actual TG channel
 
 export default function App() {
   const [vlessUrl, setVlessUrl] = useState('');
   const [configName, setConfigName] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [savedConfigs, setSavedConfigs] = useState<string[]>([]);
+  const [savedConfigs, setSavedConfigs] = useState<any[]>([]);
+  const [showAdModal, setShowAdModal] = useState(false);
 
   useEffect(() => {
     loadSavedConfigs();
+    
+    // Show Telegram ad on every launch for GitHub Edition
+    if (IS_GITHUB_EDITION) {
+      setTimeout(() => {
+        setShowAdModal(true);
+      }, 500);
+    }
   }, []);
 
   const loadSavedConfigs = async () => {
@@ -92,6 +104,15 @@ export default function App() {
     }
   };
 
+  const openTelegramChannel = () => {
+    Linking.openURL(TELEGRAM_CHANNEL);
+    setShowAdModal(false);
+  };
+
+  const closeAdModal = () => {
+    setShowAdModal(false);
+  };
+
   // Simplified VLESS to WireGuard conversion (needs proper implementation)
   const parseVlessToWireguard = async (vlessUrl: string): Promise<string> => {
     // This is a placeholder - implement proper VLESS parsing
@@ -113,7 +134,14 @@ AllowedIPs = 0.0.0.0/0
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>VLess Hunter</Text>
-        <Text style={styles.subtitle}>Development Build with Native VPN</Text>
+        <Text style={styles.subtitle}>
+          {IS_GITHUB_EDITION ? 'GitHub Edition (X-Ray Core)' : 'Development Build with Native VPN'}
+        </Text>
+        {IS_GITHUB_EDITION && (
+          <View style={styles.editionBadgeInline}>
+            <Text style={styles.editionBadgeTextInline}>GITHUB EDITION</Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.statusContainer}>
@@ -197,6 +225,46 @@ AllowedIPs = 0.0.0.0/0
           eas build --profile production --platform android
         </Text>
       </View>
+
+      {/* GitHub Edition Ad Modal */}
+      {IS_GITHUB_EDITION && (
+        <Modal
+          visible={showAdModal}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closeAdModal}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <View style={styles.editionBadge}>
+                <Text style={styles.editionBadgeText}>GITHUB EDITION</Text>
+              </View>
+              
+              <Text style={styles.modalTitle}>📢 Поддержи проект!</Text>
+              
+              <Text style={styles.modalText}>
+                Подпишись на наш Telegram канал, чтобы получать обновления,
+                новые конфигурации и техническую поддержку!
+              </Text>
+              
+              <TouchableOpacity
+                style={styles.telegramButton}
+                onPress={openTelegramChannel}
+              >
+                <Text style={{ fontSize: 24 }}>✈️</Text>
+                <Text style={styles.telegramButtonText}>Подписаться</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={closeAdModal}
+              >
+                <Text style={styles.closeButtonText}>Закрыть</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
     </ScrollView>
   );
 }
@@ -220,6 +288,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#a0a0a0',
     marginTop: 5,
+  },
+  editionBadgeInline: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginTop: 10,
+  },
+  editionBadgeTextInline: {
+    color: '#ffffff',
+    fontSize: 11,
+    fontWeight: 'bold',
   },
   statusContainer: {
     backgroundColor: '#16213e',
@@ -309,5 +389,75 @@ const styles = StyleSheet.create({
   infoText: {
     color: '#a0a0a0',
     lineHeight: 22,
+  },
+  // GitHub Edition Ad Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#16213e',
+    padding: 30,
+    borderRadius: 20,
+    width: '85%',
+    maxWidth: 400,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#4CAF50',
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#ffffff',
+    textAlign: 'center',
+    marginBottom: 25,
+    lineHeight: 24,
+  },
+  telegramButton: {
+    backgroundColor: '#0088cc',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  telegramButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  closeButton: {
+    backgroundColor: '#0f3460',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    marginTop: 10,
+  },
+  closeButtonText: {
+    color: '#a0a0a0',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  editionBadge: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 15,
+    marginTop: 10,
+  },
+  editionBadgeText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });

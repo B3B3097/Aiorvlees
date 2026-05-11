@@ -2,39 +2,55 @@
 # Dependencies
 node_modules/
 
-# Environment variables
-.env.local
-
 # Build artifacts
 dist/
 build/
-*.js.map
+target/
 
-# Cache directories
-.npm/
-.yarn/
+# Environment
+.env
+.env.local
+.env.*
 
 # Logs
 *.log
 
 # Temporary files
 *.tmp
-*.temp
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# IDE specific
-.vscode/
-.idea/
 *.swp
 *.swo
 
-# Python specific (if applicable)
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
+env/
+venv/
+.venv/
+.ENV
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/modules/
+.DS_Store
+.hg/
+.hgignore
+.hgcheck
+.hgsigs
+hgsub
+hgsubstate
+hgtags
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
 ```
