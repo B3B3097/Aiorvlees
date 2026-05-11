@@ -1,28 +1,43 @@
 ```
-# Environment
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.js
+*.ts
+*.tsx
+
+# Environment variables
 .env
 .env.local
 *.env.*
 
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-
-# Editors
+# IDE files
 .vscode/
 .idea/
+*.swp
+*.swo
+*.tmp
 
-# Dependencies
-node_modules/
-.venv/
-venv/
-__pycache__/
-.mypy_cache/
-.pytest_cache/
+# Logs
+*.log
 
-# Build artifacts
-dist/
-build/
-target/
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Expo specific
+.expo/
+node_modules/.bin/expo*
+*.expo*
+
+# TypeScript
+*.js.map
+*.tsbuildinfo
+
+# Coverage
+coverage/
+.nyc_output/
 ```
